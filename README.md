@@ -1,18 +1,33 @@
-# chrome-driver-manager-test
+# selenium-flask-sample
 
 ## 実行手順
-```console
-docker build -t chrome-driver-manager-test .
-docker run --name chrome-driver-manager-test -it --rm chrome-driver-manager-test:latest
+1. Docker コンテナの起動
+```sh
+docker compose up -d
 ```
 
-## 開発手順
-```console
-docker run -itd python:3.8-buster /bin/sh
-docker exec -it b4348814affb94d642cca9289d3e001ec1184b80c1fe0c20944ba5b4388f43a3 /bin/sh
+2. logの表示
+```sh
+docker compose logs -ft
 ```
 
-## 参考
-- https://qiita.com/memakura/items/20a02161fa7e18d8a693
-- https://q-three.com/archives/1031
-- https://future-architect.github.io/articles/20200513/
+3. localhostに対してリクエスト
+```sh
+curl http://localhost:9090/
+```
+
+## コンテナの終了
+```sh
+docker compose down
+```
+
+## docker composeを使わない場合のDockerコンテナの起動
+dockerを使う場合
+```sh
+docker build -t selenium-flask-sample .
+PORT=8080 && finch run -p 9090:${PORT} -e PORT=${PORT} --name selenium-flask-sample -it --rm selenium-flask-sample:latest
+```
+
+## TODO
+- seleniumのメジャーバージョンがまだ3なので4に移行
+  - [webdriver-managerのREADME.md](https://github.com/SergeyPirogov/webdriver_manager#use-with-chrome)に記載

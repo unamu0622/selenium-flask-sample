@@ -1,15 +1,12 @@
-FROM python:3.8-buster as builder
+FROM python:3.10-slim
 
-WORKDIR /opt/app
+ENV PYTHONUNBUFFERED True
 
-COPY requirements.txt /opt/app
-RUN pip3 install -r requirements.txt
+ENV APP_HOME /opt/app
+WORKDIR $APP_HOME
+COPY . ./
 
-FROM python:3.8-slim-buster as runner
-
-COPY --from=builder /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
-
-WORKDIR /opt/app
+RUN pip install --no-cache-dir -r requirements.txt
 
 # gnupg
 RUN apt-get update \
@@ -21,6 +18,4 @@ echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee
 apt-get update && \
 apt-get install -y google-chrome-stable
 
-COPY main.py ./
-
-CMD ["python", "main.py"]
+CMD gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
